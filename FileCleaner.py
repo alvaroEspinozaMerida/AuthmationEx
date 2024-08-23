@@ -46,8 +46,18 @@ def on_cleaner():
         for entry in entries:
             name = entry.name
             start = name.split("_")
-
             if name.startswith(tuple(headers)):
-                print(f"Will move: {name} to the directory {start[0]}")
+
+                directory_path = os.path.join(desktop_path,f"{start[0]}_{start[1]}")
+
+                if not os.path.exists(directory_path):
+                    # If it doesn't exist, create it
+                    os.makedirs(directory_path)
+                    print(f"Directory created at: {directory_path}")
+                else:
+                    print(f"Directory already exists at: {directory_path}")
+
+
+                print(f"Will move: {name} to the directory {directory_path}")
 
 on_cleaner()
