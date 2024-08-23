@@ -15,10 +15,39 @@ for example CS_448_Lecture_1.pt will have the header CS_448 once the file is rea
 a folder with the name CS_448 
 
 """
+# Desktop path
+desktop_path = os.path.join(os.path.expanduser("~"), "Desktop")
 
-headers = file_path = os.path.join(os.path.expanduser("~"), "Desktop", "headers.json")
+
+headers_path =  os.path.join(os.path.expanduser("~"), "Desktop", "headers.json")
 
 
 current_time = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
 
 print(f"File Cleaner Activated at {current_time}")
+
+def load_headers():
+    if os.path.exists(headers_path):
+        with open(headers_path, 'r') as file:
+            return json.load(file)
+    return []
+def save_headers(names):
+    with open(headers_path, 'w') as file:
+        json.dump(names, file, indent=4)
+
+
+
+
+def on_cleaner():
+    headers = load_headers()
+
+
+    with os.scandir(desktop_path) as entries:
+        for entry in entries:
+            name = entry.name
+            start = name.split("_")
+
+            if name.startswith(tuple(headers)):
+                print(f"Will move: {name} to the directory {start[0]}")
+
+on_cleaner()
