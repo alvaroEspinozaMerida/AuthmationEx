@@ -65,30 +65,26 @@ def on_cleaner():
         for entry in entries:
             name = entry.name
             print(f"Processing {name}")
-            # start = name.split("_")
-            # if name.startswith(tuple(headers)):
-            #
-            #     directory_path = os.path.join(desktop_path,f"{start[0]}_{start[1]}")
-            #
-            #     file_name = start[2]
-            #
-            #     if not os.path.exists(directory_path):
-            #         # If it doesn't exist, create it
-            #         os.makedirs(directory_path)
-            #
-            #     unique_name = make_unique(directory_path, file_name)
+            start = name.split("_")
 
+            if name.startswith(tuple(headers)):
 
+                directory_path = os.path.join(desktop_path,f"{start[0]}_{start[1]}")
 
+                # Makes directory if doesnt not exist
+                if not os.path.exists(directory_path):
+                    # If it doesn't exist, create it
+                    os.makedirs(directory_path)
+                #checks files name to check if  it already exist inside of the directory
+                file_name = start[2:]
 
+                # checks if file already exist
+                if exists(f"{desktop_path}/{name}"):
+                    unique_name = make_unique(desktop_path, file_name)
+                    oldName = join(desktop_path, file_name)
+                    newName = join(desktop_path, unique_name)
+                    rename(oldName, newName)
+                move(newName,directory_path)
 
-
-
-                    # print(f"Directory created at: {directory_path}")
-                # else:
-                #     print(f"Directory already exists at: {directory_path}")
-                # move_file(directory_path, )
-
-                # print(f"Will move: {name} to the directory {directory_path}")
 
 on_cleaner()
