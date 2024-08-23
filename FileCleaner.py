@@ -1,9 +1,11 @@
 from datetime import datetime
 # from os import scandir, rename
-# from os.path import exists, join, splitext
+from os.path import exists, join, splitext
+from os import scandir, rename
 import os
 from shutil import move
 import json
+
 
 import logging
 """
@@ -36,7 +38,24 @@ def save_headers(names):
         json.dump(names, file, indent=4)
 
 
+def make_unique(dest, name):
+    filename, extension = os.path.splitext(name)
+    counter = 1
 
+    # Construct the full path using os.path.join to ensure OS-agnostic behavior
+    while os.path.exists(os.path.join(dest, name)):
+        name = f"{filename}({str(counter)}){extension}"
+        counter += 1
+
+    return name
+
+def move_file(dest, entry):
+    if exists(f"{dest}/{entry}"):
+        unique_name = make_unique(dest, entry)
+        oldName = join(dest, entry)
+        newName = join(dest, unique_name)
+        rename(oldName, newName)
+    move(entry, dest)
 
 def on_cleaner():
     headers = load_headers()
@@ -45,19 +64,31 @@ def on_cleaner():
     with os.scandir(desktop_path) as entries:
         for entry in entries:
             name = entry.name
-            start = name.split("_")
-            if name.startswith(tuple(headers)):
+            print(f"Processing {name}")
+            # start = name.split("_")
+            # if name.startswith(tuple(headers)):
+            #
+            #     directory_path = os.path.join(desktop_path,f"{start[0]}_{start[1]}")
+            #
+            #     file_name = start[2]
+            #
+            #     if not os.path.exists(directory_path):
+            #         # If it doesn't exist, create it
+            #         os.makedirs(directory_path)
+            #
+            #     unique_name = make_unique(directory_path, file_name)
 
-                directory_path = os.path.join(desktop_path,f"{start[0]}_{start[1]}")
-
-                if not os.path.exists(directory_path):
-                    # If it doesn't exist, create it
-                    os.makedirs(directory_path)
-                    print(f"Directory created at: {directory_path}")
-                else:
-                    print(f"Directory already exists at: {directory_path}")
 
 
-                print(f"Will move: {name} to the directory {directory_path}")
+
+
+
+
+                    # print(f"Directory created at: {directory_path}")
+                # else:
+                #     print(f"Directory already exists at: {directory_path}")
+                # move_file(directory_path, )
+
+                # print(f"Will move: {name} to the directory {directory_path}")
 
 on_cleaner()
