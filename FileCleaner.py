@@ -1,3 +1,4 @@
+import shutil
 from datetime import datetime
 # from os import scandir, rename
 from os.path import exists, join, splitext
@@ -64,7 +65,7 @@ def on_cleaner():
     with os.scandir(desktop_path) as entries:
         for entry in entries:
             name = entry.name
-            print(f"Processing {name}")
+            # print(f"Processing {name}")
             start = name.split("_")
 
             if name.startswith(tuple(headers)):
@@ -76,15 +77,17 @@ def on_cleaner():
                     # If it doesn't exist, create it
                     os.makedirs(directory_path)
                 #checks files name to check if  it already exist inside of the directory
-                file_name = start[2:]
 
-                # checks if file already exist
-                if exists(f"{desktop_path}/{name}"):
-                    unique_name = make_unique(desktop_path, file_name)
-                    oldName = join(desktop_path, file_name)
-                    newName = join(desktop_path, unique_name)
-                    rename(oldName, newName)
-                move(newName,directory_path)
+                if os.path.exists(os.path.join(directory_path, name)):
+
+                    unique_name = make_unique(directory_path, name)
+                    directory_path = os.path.join(directory_path, unique_name)
+                else:
+                    directory_path = os.path.join(directory_path, unique_name)
+
+                shutil.move(entry, directory_path)
+
+
 
 
 on_cleaner()
